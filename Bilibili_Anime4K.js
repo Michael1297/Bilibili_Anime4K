@@ -14,6 +14,14 @@
 // @match               *://www.bilibili.com/bangumi/play/ss*
 // @match               *://www.bilibili.com/video/BV*
 // @match               *://www.acfun.cn/bangumi/aa*
+// @match               *://*.online-stars.org/*
+// @match               *://*.online-star.org/*
+// @match               *://www.anilibria.tv/*
+// @match               *://online.anidub.com/*
+// @match               *://jut-su.net/*
+// @match               *://anistar*.*/*
+// @match               *://kodik.info/*
+// @match               *://vk.com/video_ext.php?*
 // @grant               none
 // @license             MIT License
 // @run-at              document-idle
