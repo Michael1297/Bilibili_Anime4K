@@ -6,7 +6,7 @@
 // @namespace           http://net2cn.tk/
 // @homepageURL         https://github.com/net2cn/Bilibili_Anime4K/
 // @supportURL          https://github.com/net2cn/Bilibili_Anime4K/issues
-// @version             0.4.10
+// @version             0.4.12
 // @author              net2cn
 // @copyright           bloc97, DextroseRe, NeuroWhAI, and all contributors of Anime4K
 // @match               *://www.bilibili.com/video/av*
@@ -801,7 +801,6 @@ function Scaler(gl) {
     this.isLoggedPaused = false;
     this.isFullscreen = true;   // Setting this to true to resize the board on start.
     console.log("Default screen aspect ratio is set to " + this.screenRatio)
-    console.log(this)
 }
 
 Scaler.prototype.inputImage = function (img) {
@@ -863,8 +862,8 @@ Scaler.prototype.resizeBoard = function(originRatio, newRatio){
     }
 }
 
-Scaler.prototype.render = function () {
-    if (!this.inputTex) {
+Scaler.prototype.render = async function () {
+    if (!this.inputMov || !this.inputTex) {
         return;
     }
 
@@ -885,7 +884,7 @@ Scaler.prototype.render = function () {
     // Nasty trick to fix video quailty changing bug.
     if (gl.getError() == gl.INVALID_VALUE) {
         console.log('glError detected! Fetching new viedo tag... (This may happen due to resolution change)')
-        let newMov = getNewVideoTag()
+        let newMov = await getVideoTag()
         this.inputVideo(newMov)
     }
 
@@ -1137,6 +1136,7 @@ let globalScaler = null;
 let globalMovOrig = null;
 let globalBoard = null;
 let globalScale = 2.0;
+let globalCurrentHref=window.location.href
 
 let globalUpdateId, globalPreviousDelta = 0;
 let globalFpsLimit = 30;    // Limit fps to 30 fps. Change here if you want more frames to be rendered. (But usually 30 fps is pretty enough for most anime as they are mostly done on threes.)
@@ -1189,19 +1189,30 @@ async function injectCanvas() {
 
     // Create a canvas (since video tag do not support WebGL).
     globalMovOrig = await getVideoTag()
-    console.log(globalMovOrig)
 
     let div = globalMovOrig.parentElement
+    if(window.location.href.toLowerCase().includes("bilibili.com")){
+        console.log("Working on bilibili.com.")
+        while(div.className!="bilibili-player-video") {
+            await new Promise(r => setTimeout(r, 500));
+        }
+        div = globalMovOrig.parentElement
+    }
     div.style.backgroundColor = "black" // Patch for ACFun.
 
-    globalBoard = document.createElement('canvas');
-    // Make it visually fill the positioned parent
-    globalBoard.style.width = '100%';
-    globalBoard.style.height = '100%';
-    // ...then set the internal size to match
-    globalBoard.width = globalBoard.offsetWidth;
-    globalBoard.height = globalBoard.offsetHeight;
-    // Add it back to the div where contains the video tag we use as input.
+    if (!globalBoard){
+        console.log("globalBoard not exists. Creating new one.")
+
+        globalBoard = document.createElement('canvas');
+        // Make it visually fill the positioned parent
+        globalBoard.style.width = '100%';
+        globalBoard.style.height = '100%';
+        // ...then set the internal size to match
+        globalBoard.width = globalBoard.offsetWidth;
+        globalBoard.height = globalBoard.offsetHeight;
+        // Add it back to the div where contains the video tag we use as input.
+    }
+    console.log("Adding new canvas.")
     div.appendChild(globalBoard)
 
     // Hide original video tag, we don't need it to be displayed.
@@ -1212,32 +1223,11 @@ async function getVideoTag() {
     while(document.getElementsByTagName("video").length <= 0) {
         await new Promise(r => setTimeout(r, 500));
     }
-
-    return document.getElementsByTagName("video")[0]
-}
-
-function getNewVideoTag() {
-    // Get video tag.
-    globalMovOrig = document.getElementsByTagName("video")[0]
-
-    // Hide it, we don't need it to be displayed.
-    globalMovOrig.style.display = 'none'
-
-    globalScaler.scale = globalScale;
-
-    return globalMovOrig
-}
-
-function doFilter() {
-    // Setting our parameters for filtering.
-    // scale: multipliers that we need to zoom in.
-    // Here's the fun part. We create a pixel shader for our canvas
-    console.log('Enabling filter...')
-
-    const gl = globalBoard.getContext('webgl');
-
+    
+    globalMovOrig=document.getElementsByTagName("video")[0]
+    
     globalMovOrig.addEventListener('loadedmetadata', function () {
-        globalScaler = new Scaler(gl);
+        globalScaler = !globalScaler?new Scaler(globalBoard.getContext('webgl')):globalScaler;
         globalScaler.inputVideo(globalMovOrig);
         globalScaler.resize(globalScale);
         globalScaler.scale = globalScale;
@@ -1245,6 +1235,15 @@ function doFilter() {
     globalMovOrig.addEventListener('error', function () {
         alert("Can't get video, sorry.");
     }, true);
+
+    return globalMovOrig
+}
+
+async function doFilter() {
+    // Setting our parameters for filtering.
+    // scale: multipliers that we need to zoom in.
+    // Here's the fun part. We create a pixel shader for our canvas
+    console.log('Enabling filter...')
 
     // Auto detect refresh rate.
     getScreenRefreshRate(function(screenRefreshRate){
@@ -1254,7 +1253,7 @@ function doFilter() {
     });
 
     // Do it! Filter it! Profit!
-    function render(currentDelta) {
+    async function render(currentDelta) {
         // Notice that limiting the framerate here did increase performance.
         globalUpdateId = requestAnimationFrame(render);
         let delta = currentDelta - globalPreviousDelta;
@@ -1266,6 +1265,13 @@ function doFilter() {
         if (globalScaler) {
             globalScaler.render();
         }
+
+        if (globalCurrentHref!=window.location.href){
+            console.log("Page changed!")
+            await injectCanvas()
+            globalCurrentHref=window.location.href
+        }
+
         globalPreviousDelta = currentDelta
     }
 
