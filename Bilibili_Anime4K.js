@@ -22,7 +22,6 @@
 // @match               *://anistar*.*/*
 // @match               *://kodik.info/*
 // @match               *://vk.com/video_ext.php?*
-// @match               *://aniqit.com/*
 // @grant               none
 // @license             MIT License
 // @run-at              document-idle
