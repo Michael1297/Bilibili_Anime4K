@@ -6,7 +6,7 @@
 // @namespace           http://net2cn.tk/
 // @homepageURL         https://github.com/net2cn/Bilibili_Anime4K/
 // @supportURL          https://github.com/net2cn/Bilibili_Anime4K/issues
-// @version             0.4.12
+// @version             0.4.12.1
 // @author              net2cn
 // @copyright           bloc97, DextroseRe, NeuroWhAI, and all contributors of Anime4K
 // @match               *://www.bilibili.com/video/av*
@@ -22,6 +22,7 @@
 // @match               *://anistar*.*/*
 // @match               *://kodik.info/*
 // @match               *://vk.com/video_ext.php?*
+// @match               *://video.animaunt.tv/*
 // @grant               none
 // @license             MIT License
 // @run-at              document-idle
@@ -1198,7 +1199,13 @@ async function injectCanvas() {
         div = globalMovOrig.parentElement
     }
     div.style.backgroundColor = "black" // Patch for ACFun.
-
+	
+    if ((new URL(globalMovOrig.src)).origin !== window.location.origin) {
+        console.log("CORS detected!");
+        globalMovOrig.crossOrigin = "anonymous"
+        globalMovOrig.load()
+    }
+	
     if (!globalBoard){
         console.log("globalBoard not exists. Creating new one.")
 
