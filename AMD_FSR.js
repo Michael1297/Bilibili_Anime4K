@@ -2,7 +2,7 @@
 // @name                AMD_FSR
 // @description         Bring AMD FSR 1 to HTML5 players for sharper upscaling.
 // @homepageURL         https://github.com/Michael1297/Anime4K_js/
-// @version             0.6.0-fsr1
+// @version             0.6.1-fsr1
 // @author              Michael1297
 // @copyright           Advanced Micro Devices, agyild, and all contributors
 // @match               *://www.bilibili.com/video/av*
@@ -20,6 +20,7 @@
 // @match               *://*.kodik.info/*
 // @match               *://*.vk.com/video_ext.php?*
 // @match               *://*.animaunt.*/*
+// @match               *://*.anitokyo.tv/*
 // @grant               none
 // @downloadURL         https://raw.githubusercontent.com/Michael1297/Anime4K_js/refs/heads/master/AMD_FSR.js
 // @updateURL           https://raw.githubusercontent.com/Michael1297/Anime4K_js/refs/heads/master/AMD_FSR.js

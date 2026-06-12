@@ -2,7 +2,7 @@
 // @name                AMD_CAS
 // @description         Bring AMD CAS to HTML5 players for configurable sharpening and upscaling.
 // @homepageURL         https://github.com/Michael1297/Anime4K_js/
-// @version             0.6.0-cas
+// @version             0.6.1-cas
 // @author              Michael1297
 // @copyright           Advanced Micro Devices, agyild, and all contributors
 // @match               *://www.bilibili.com/video/av*
@@ -20,6 +20,7 @@
 // @match               *://*.kodik.info/*
 // @match               *://*.vk.com/video_ext.php?*
 // @match               *://*.animaunt.*/*
+// @match               *://*.anitokyo.tv/*
 // @grant               none
 // @downloadURL         https://raw.githubusercontent.com/Michael1297/Anime4K_js/refs/heads/master/AMD_CAS.js
 // @updateURL           https://raw.githubusercontent.com/Michael1297/Anime4K_js/refs/heads/master/AMD_CAS.js

@@ -2,7 +2,7 @@
 // @name                Anime4K_VL
 // @description         Bring Anime4K to HTML5 players to clearify 2D anime.
 // @homepageURL         https://github.com/Michael1297/Anime4K_js/
-// @version             0.6.0-vl
+// @version             0.6.1-vl
 // @author              Michael1297
 // @copyright           bloc97, DextroseRe, NeuroWhAI, and all contributors of Anime4K
 // @match               *://www.bilibili.com/video/av*
@@ -20,6 +20,7 @@
 // @match               *://*.kodik.info/*
 // @match               *://*.vk.com/video_ext.php?*
 // @match               *://*.animaunt.*/*
+// @match               *://*.anitokyo.tv/*
 // @grant               none
 // @downloadURL         https://raw.githubusercontent.com/Michael1297/Anime4K_js/refs/heads/master/Anime4K_VL.js
 // @updateURL           https://raw.githubusercontent.com/Michael1297/Anime4K_js/refs/heads/master/Anime4K_VL.js
